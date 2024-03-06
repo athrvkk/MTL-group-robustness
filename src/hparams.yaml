@@ -1,0 +1,220 @@
+civilcomments_small:
+    erm:
+        num_train_epochs: 50
+        learning_rate: [1e-5, 1e-4]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        lr_scheduler_type: 'linear'
+    jtt:
+        num_train_epochs: 50
+        learning_rate: [1e-5, 1e-4]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        up: [4, 6]
+        T: [2, 5]
+        lr_scheduler_type: 'linear'
+    dro:
+        num_train_epochs: 50
+        learning_rate: [1e-5, 1e-4]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        lr_scheduler_type: 'linear'
+    erm_l1:
+        num_train_epochs: 50
+        learning_rate: [1e-5]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        erm_weight: [0]
+        reg_weight: [-1, 0, 1]
+        lr_scheduler_type: 'linear'
+    erm_mt:
+        num_train_epochs: 50
+        learning_rate: [1e-5]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        erm_weight: [0]
+        mt_weight: [-1, 0, 1]
+        lr_scheduler_type: 'linear'
+    erm_mt_l1:
+        num_train_epochs: 50
+        learning_rate: [1e-5]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        erm_weight: [0]
+        mt_weight: [-1, 0, 1]
+        reg_weight: [-1, 0, 1]
+        lr_scheduler_type: 'linear'
+    erm_mt2_l1:
+        num_train_epochs: 50
+        learning_rate: [1e-5]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        erm_weight: [0]
+        mt_weight: [-1, 0, 1]
+        reg_weight: [-1, 0, 1]
+        lr_scheduler_type: 'linear'
+             
+        
+civilcomments:
+    erm:
+        num_train_epochs: 50
+        learning_rate: [1e-5, 1e-4]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        lr_scheduler_type: 'linear'
+    jtt:
+        num_train_epochs: 50
+        learning_rate: [1e-5, 1e-4]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        up: [4, 6]
+        T: [2, 5]
+        lr_scheduler_type: 'linear'
+    dro:
+        num_train_epochs: 50
+        learning_rate: [1e-5, 1e-4]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        lr_scheduler_type: 'linear'
+    erm_mt_l1:
+        num_train_epochs: 50
+        learning_rate: [1e-5]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        erm_weight: [0]
+        mt_weight: [-1, 0, 1]
+        reg_weight: [-1, 0, 1]
+        lr_scheduler_type: 'linear'
+    erm_mt2_l1:
+        num_train_epochs: 50
+        learning_rate: [1e-5]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        erm_weight: [0]
+        mt_weight: [-1, 0, 1]
+        reg_weight: [-1, 0, 1]
+        lr_scheduler_type: 'linear'
+
+
+
+multinli:
+    erm:
+        num_train_epochs: 50
+        learning_rate: [1e-5, 1e-4]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        lr_scheduler_type: 'linear'
+    jtt:
+        num_train_epochs: 50
+        learning_rate: [1e-5, 1e-4]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        up: [4, 6]
+        T: [2, 5]
+        lr_scheduler_type: 'linear'
+    dro:
+        num_train_epochs: 50
+        learning_rate: [1e-5, 1e-4]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        lr_scheduler_type: 'linear'
+    erm_mt_l1:
+        num_train_epochs: 50
+        learning_rate: [1e-5]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        erm_weight: [0]
+        mt_weight: [-1, 0, 1]
+        reg_weight: [-1, 0, 1]
+        lr_scheduler_type: 'linear'
+
+
+
+waterbirds:
+    erm:
+        num_train_epochs: 200
+        learning_rate: [1e-4, 1e-3]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32, 64]
+        lr_scheduler_type: 'cosine_with_restarts'
+    dro:
+        num_train_epochs: 200
+        learning_rate: [1e-4, 1e-3]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32, 64]
+        lr_scheduler_type: 'cosine_with_restarts'
+    jtt:
+        num_train_epochs: 200
+        learning_rate: [1e-3]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        up: [20, 50]
+        T: [10, 30]
+        lr_scheduler_type: 'cosine_with_restarts'
+    erm_l1:
+        num_train_epochs: 200
+        learning_rate: [1e-3]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        erm_weight: [0]
+        reg_weight: [-1, 0, 1]
+        lr_scheduler_type: 'cosine_with_restarts'
+    erm_mt:
+        num_train_epochs: 200
+        learning_rate: [1e-3]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        erm_weight: [0]
+        mt_weight: [-1, 0, 1]
+        lr_scheduler_type: 'cosine_with_restarts'
+    erm_mt_l1:
+        num_train_epochs: 200
+        learning_rate: [1e-3]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        erm_weight: [0]
+        mt_weight: [-1, 0, 1]
+        reg_weight: [-1, 0, 1]
+        lr_scheduler_type: 'cosine_with_restarts'
+    erm_mt2_l1:
+        num_train_epochs: 200
+        learning_rate: [1e-3]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        erm_weight: [0]
+        mt_weight: [-1, 0, 1]
+        reg_weight: [-1, 0, 1]
+        lr_scheduler_type: 'cosine_with_restarts'
+        
+        
+
+celeba:
+    erm:
+        num_train_epochs: 50
+        learning_rate: [1e-4, 1e-3]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32, 64]
+        lr_scheduler_type: 'cosine_with_restarts'
+    dro:
+        num_train_epochs: 50
+        learning_rate: [1e-4, 1e-3]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32, 64]
+        lr_scheduler_type: 'cosine_with_restarts'
+    jtt:
+        num_train_epochs: 50
+        learning_rate: [1e-3]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        up: [20, 50]
+        T: [5, 10]
+        lr_scheduler_type: 'cosine_with_restarts'
+    erm_mt_l1:
+        num_train_epochs: 50
+        learning_rate: [1e-3]
+        weight_decay: [1e-2]
+        bs: [4, 8, 16, 32]
+        erm_weight: [0]
+        mt_weight: [-1, 0, 1]
+        reg_weight: [-1, 0, 1]
+        lr_scheduler_type: 'cosine_with_restarts'
