@@ -13,20 +13,6 @@ import re
 
 
 
-def check_text_in_file(file_path, target_text):
-    try:
-        with open(file_path, 'r') as file:
-            contents = file.read()
-            if target_text in contents:
-                return True
-            else:
-                return False
-    except FileNotFoundError:
-        print("File not found.")
-        return False
-    
-    
-    
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description='Balancing baselines')
@@ -38,22 +24,11 @@ if __name__ == "__main__":
         help="The name of the dataset to use. Options: waterbirds, celeba, multinli, civilcomments, and civilcomments_small."
     )
     parser.add_argument(
-        "--dataset_dir", 
-        type=str, 
-        default="./data/waterbirds/",
-        help="directory where the dataset is stored"
-    )
-    parser.add_argument(
         "--method", 
         type=str, 
         default="erm", 
         choices=["erm", "erm_l1", "erm_mt", "erm_mt_l1", "erm_mt2_l1", "suby", "subg", "rwy", "rwg", "dro", "jtt"],
         help="The method to use to train the models",
-    )
-    parser.add_argument(
-        "--from_scratch", 
-        action="store_true", 
-        help="Whether or train from scratch or not"
     )
     parser.add_argument(
         "--num_init_seeds", 
@@ -73,23 +48,21 @@ if __name__ == "__main__":
     with open('./src/hparams.yaml', 'r') as file:
         config = yaml.safe_load(file)
     file.close()
-        
-    config = config[args.dataset_dir.split('/')[-1]][args.method]
+    
+    dataset_dir = os.path.join("./data", args.dataset)
+    config = config[args.dataset][args.method]
     
     std_command = f"""
     python3 /src/train.py \
     --method {args.method} \
     --dataset {args.dataset} \
-    --data_path {args.dataset_dir} \
+    --data_path {dataset_dir} \
     --num_train_epochs {config['num_train_epochs']} \
     --lr_scheduler_type {config['lr_scheduler_type']} \
     --output_dir models \
     --result_dir results \
     """
 
-    if args.from_scratch:
-        std_command += " --from_scratch"
-        
     # Add grid search hyperparameters
     if args.method in ["erm", "suby", "subg", "rwy", "rwg", "dro"]:
         commands = []
@@ -176,24 +149,22 @@ if __name__ == "__main__":
        
     print(f"\nTotal scripts to run: {len(commands)}\n")
     
-    log_dir = f"./logs/{args.method}_scratch" if args.from_scratch else f"logs/{args.method}"
-    log_dir = os.path.join(log_dir, args.dataset_dir.split('/')[-1])
+    log_dir = os.path.join("./logs", args.method, args.dataset)
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
         
-    error_dir = f"./errors/{args.method}_scratch" if args.from_scratch else f"errors/{args.method}"
-    error_dir = os.path.join(error_dir, args.dataset_dir.split('/')[-1])
+    error_dir = os.path.join("./errors", args.method, args.dataset)
     if not os.path.exists(error_dir):
         os.makedirs(error_dir)
     
     if not os.path.exists("./hparams_files"):
         os.makedirs("./hparams_files")
         
-    fname = f"./hparams_files/{args.dataset_dir.split('/')[-1]}_{args.method}_scratch.txt" if args.from_scratch else f"hparams_files/{args.dataset_dir.split('/')[-1]}_{args.method}.txt"
+    fname = f"hparams_files/{args.dataset}_{args.method}.txt"
     
     with open(fname, "w") as f:
         for command in commands:
-            f.write("%s" % inspect.cleandoc(command))
+            f.write("%s" % inspect.cleandoc(command.lstrip()))
     f.close()
     
     params_args = "params=$(tail -n+${SLURM_ARRAY_TASK_ID} " + f"{fname} | head -n1)"
@@ -214,8 +185,8 @@ if __name__ == "__main__":
         #SBATCH --mem=50GB
         #SBATCH --time=2-23:00:00
         #SBATCH --gres gpu:3090:1
-        #SBATCH --output={log_dir}/{args.dataset_dir.split('/')[-1]}_array_job_%A_%a.log
-        #SBATCH --error={error_dir}/{args.dataset_dir.split('/')[-1]}_array_job_%A_%a.err
+        #SBATCH --output={log_dir}/{args.dataset}_array_job_%A_%a.log
+        #SBATCH --error={error_dir}/{args.dataset}_array_job_%A_%a.err
 
         {params_args}   
         $params
@@ -225,7 +196,7 @@ if __name__ == "__main__":
     if not os.path.exists("./scripts"):
         os.makedirs("./scripts")
         
-    bash_file = f"train_{args.dataset_dir.split('/')[-1]}_{args.method}_hp_scratch.sh" if args.from_scratch else f"train_{args.dataset_dir.split('/')[-1]}_{args.method}_hp.sh"
+    bash_file = f"train_{args.dataset}_{args.method}_hp.sh"
     
     with open(os.path.join("./scripts", bash_file), "w") as f:
         f.write("%s\n" % job_file_header)

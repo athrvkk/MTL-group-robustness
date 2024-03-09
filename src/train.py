@@ -154,11 +154,6 @@ def parse_args():
         help="Whether to reset dataloaders after each epoch.",
     )
     parser.add_argument(
-        "--from_scratch", 
-        action="store_true", 
-        help="Whether or train from scratch or not"
-    )
-    parser.add_argument(
         "--T", 
         type=int,
          default=2,
@@ -194,7 +189,7 @@ def save_results(results_dict, arguments, params_str, epoch):
         append = ""       
         if 'small' in arguments.data_path:
             append="_small"
-        result_dir = os.path.join(arguments.result_dir, f"{arguments.dataset}{append}_scratch/{data_type}") if args.from_scratch else os.path.join(arguments.result_dir, f"{arguments.dataset}{append}/{data_type}")
+        result_dir = os.path.join(arguments.result_dir, f"{arguments.dataset}{append}/{data_type}")
         
         result_dir = result_dir.replace("erm_mt_l1", "erm_mt_l2")
         if not os.path.exists(result_dir):
@@ -309,9 +304,9 @@ def run_experiment(args):
     append = ""       
     if 'small' in args.data_path:
         append="_small"
-    model_dir = os.path.join(args.output_dir, f"{args.dataset}{append}/", f"{args.method}_scratch") if args.from_scratch else os.path.join(args.output_dir, f"{args.dataset}{append}/", f"{args.method}")
+    model_dir = os.path.join(args.output_dir, f"{args.dataset}{append}/", f"{args.method}")
     
-    model_config_dir = os.path.join(f"{args.output_dir}_params", f"{args.dataset}{append}/", f"{args.method}_scratch") if args.from_scratch else os.path.join(f"{args.output_dir}_params", f"{args.dataset}{append}/", args.method)
+    model_config_dir = os.path.join(f"{args.output_dir}_params", f"{args.dataset}{append}/", args.method)
     
     model_dir = model_dir.replace("erm_mt_l1", "erm_mt_l2")
     model_config_dir = model_config_dir.replace("erm_mt_l1", "erm_mt_l2")
