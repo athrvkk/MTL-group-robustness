@@ -50,103 +50,45 @@ if __name__ == "__main__":
     file.close()
     
     dataset_dir = os.path.join("./data", args.dataset)
-    config = config[args.dataset][args.method]
+    try:
+        config = config[args.dataset][args.method]
+    except:
+        print("\nMethod hyperparameters not provided in ./src/hparams.yaml file...\n")
     
     std_command = f"""
-    python3 /src/train.py \
+    python3 ./src/train.py \
     --method {args.method} \
     --dataset {args.dataset} \
     --data_path {dataset_dir} \
     --num_train_epochs {config['num_train_epochs']} \
     --lr_scheduler_type {config['lr_scheduler_type']} \
-    --output_dir models \
-    --result_dir results \
+    --output_dir ./models \
+    --result_dir ./results \
+    --learning_rate {config['learning_rate']} \
+    --weight_decay {config['weight_decay']} \
+    --erm_batch_size {config['batch_size']} \
     """
 
-    # Add grid search hyperparameters
-    if args.method in ["erm", "suby", "subg", "rwy", "rwg", "dro"]:
-        commands = []
-        # Add seed values   
-        for seed in range(args.num_init_seeds):   
-            command = ""
-            for lr, wd, bs in list(product(config['learning_rate'], config['weight_decay'], config['bs'])):
-                command = std_command + f"""--seed {seed} \
-                --learning_rate {lr} \
-                --weight_decay {wd} \
-                --erm_batch_size {bs}
-                """
-                commands.append(inspect.cleandoc(command))
-                
-    elif args.method == "jtt":
-        commands = []
-        # Add seed values   
-        for seed in range(args.num_init_seeds):   
-            command = ""
-            for lr, wd, bs, up, t in list(product(config['learning_rate'], config['weight_decay'], config['bs'], config['up'], config['T'])):
-                command = std_command + f"""--seed {seed} \
-                --learning_rate {lr} \
-                --weight_decay {wd} \
-                --erm_batch_size {bs} \
-                --up {up} \
-                --T {t}
-                 """
-                commands.append(inspect.cleandoc(command))   
-                
-    elif "mt" in args.method and "l1" not in args.method:
-        lr = config['learning_rate'][0]
-        wd = config['weight_decay'][0]
-        commands = []
-        for seed in range(args.num_init_seeds):
-            command = ""
-            for bs, erm_weight, mt_weight in list(product(config['bs'], config['erm_weight'], config['mt_weight'])):
-                command = std_command + f"""--seed {seed} \
-                --learning_rate {lr} \
-                --weight_decay {wd} \
-                --erm_batch_size {bs} \
-                --mt_batch_size {bs} \
-                --erm_weight {round(np.exp(erm_weight), 4)} \
-                --mt_weight {round(np.exp(mt_weight), 4)}
-                 """
-                commands.append(inspect.cleandoc(command))
-        
+    if args.method == "jtt":
+        std_command += f"""
+        --T {config['T']} \
+        --up {config['up']} \
+        """
     
-    elif "mt" not in args.method and "l1" in args.method:
-        lr = config['learning_rate'][0]
-        wd = config['weight_decay'][0]
-        commands = []
-        for seed in range(args.num_init_seeds):
-            command = ""
-            for bs, erm_weight, reg_weight in list(product(config['bs'], config['erm_weight'], config['reg_weight'])):
-                command = std_command + f"""--seed {seed} \
-                --learning_rate {lr} \
-                --weight_decay {wd} \
-                --erm_batch_size {bs} \
-                --mt_batch_size {bs} \
-                --erm_weight {round(np.exp(erm_weight), 4)} \
-                --reg_weight {round(np.exp(reg_weight), 4)}
-                 """
-                commands.append(inspect.cleandoc(command))
-       
-       
-    elif "mt" in args.method and "l1" in args.method:
-        lr = config['learning_rate'][0]
-        wd = config['weight_decay'][0]
-        commands = []
-        for seed in range(args.num_init_seeds):
-            command = ""
-            for bs, erm_weight, mt_weight, reg_weight in list(product(config['bs'], config['erm_weight'], config['mt_weight'], config['reg_weight'])):
-                command = std_command + f"""--seed {seed} \
-                --learning_rate {lr} \
-                --weight_decay {wd} \
-                --erm_batch_size {bs} \
-                --mt_batch_size {bs} \
-                --erm_weight {round(np.exp(erm_weight), 4)} \
-                --mt_weight {round(np.exp(mt_weight), 4)} \
-                --reg_weight {round(np.exp(reg_weight), 4)}
-                 """
-                commands.append(inspect.cleandoc(command))
-       
-       
+    if "mt" in args.method:
+        std_command += f"""
+        --erm_weight {config['erm_weight']} \
+        """
+        
+    if "l1" in args.method:
+        std_command += f"""
+        --reg_weight {config['reg_weight']} \
+        """
+      
+    commands = []
+    for seed in range(args.num_init_seeds):
+        command  = std_command + f"--seed {seed}"
+        commands.append(inspect.cleandoc(command))
     print(f"\nTotal scripts to run: {len(commands)}\n")
     
     log_dir = os.path.join("./logs", args.method, args.dataset)
@@ -164,7 +106,7 @@ if __name__ == "__main__":
     
     with open(fname, "w") as f:
         for command in commands:
-            f.write("%s" % inspect.cleandoc(command.lstrip()))
+            f.write(f"{command}\n")
     f.close()
     
     params_args = "params=$(tail -n+${SLURM_ARRAY_TASK_ID} " + f"{fname} | head -n1)"

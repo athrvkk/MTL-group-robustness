@@ -670,7 +670,7 @@ def get_loaders(data_path, dataset_name, bs, method="erm", duplicates=None, seed
         else:
             sampler = None
             
-        if any(substring in method for substring in ["mt", "l1"]):
+        if method in ["erm_mt", "erm_mt_l1", "erm_mt2", "erm_mt2_l1"]:
             return [
                 DataLoader(
                     dataset,

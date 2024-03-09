@@ -70,6 +70,12 @@ def parse_args():
         help="The path to the dataset directory."
     )
     parser.add_argument(
+        "--model_name_or_path",
+        type=str,
+        help="Path to pretrained model or model identifier from huggingface.co/models.",
+        required=False,
+    )
+    parser.add_argument(
         "--num_train_epochs", 
         type=int, 
         default=10, 
