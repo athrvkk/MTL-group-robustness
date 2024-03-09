@@ -70,20 +70,17 @@ if __name__ == "__main__":
     """
 
     if args.method == "jtt":
-        std_command += f"""
-        --T {config['T']} \
+        std_command += f"""--T {config['T']} \
         --up {config['up']} \
         """
     
     if "mt" in args.method:
-        std_command += f"""
-        --erm_weight {config['erm_weight']} \
-        """
+        std_command += f"""--mt_weight {round(np.exp(config['mt_weight']), 4)} \
+            """
         
     if "l1" in args.method:
-        std_command += f"""
-        --reg_weight {config['reg_weight']} \
-        """
+        std_command += f"""--reg_weight {round(np.exp(config['reg_weight']), 4)} \
+            """
       
     commands = []
     for seed in range(args.num_init_seeds):
@@ -123,10 +120,10 @@ if __name__ == "__main__":
         
         #SBATCH --job-name={exp_name}
         #SBATCH --array=1-{len(commands)}%{args.max_jobs}
-        #SBATCH --partition=babel-shared-long
-        #SBATCH --mem=50GB
-        #SBATCH --time=2-23:00:00
-        #SBATCH --gres gpu:3090:1
+        #SBATCH --partition=general
+        #SBATCH --mem=40GB
+        #SBATCH --time=1-23:58:00
+        #SBATCH --gres gpu:A6000:1
         #SBATCH --output={log_dir}/{args.dataset}_array_job_%A_%a.log
         #SBATCH --error={error_dir}/{args.dataset}_array_job_%A_%a.err
 
